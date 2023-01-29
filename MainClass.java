@@ -27,86 +27,95 @@ public class TicTacToe {
 		
 		System.out.println("Play against CPU or Human? \n(0 for CPU and 1 for Human)");
 		Scanner scanOpp = new Scanner(System.in);
-		int opponent = scanOpp.nextInt();
-
-		printGameBoard(gameBoard);
 		
-		boolean currentPlayer = Math.random() <= 0.5;	
-		
-		while(true) {
-			if(currentPlayer) {
-				//'Scanner' = to convert bytes from input stream into characters
-				Scanner scan = new Scanner(System.in);	//here, scanner created
-				System.out.println("Player 'X' enter your position (1-9): ");
-				
-				typeCheck1:
-					// to handle bad inputs
-					try {
-						int playerPos = scan.nextInt();		//here, actually input is read, and we want to read the next/new input as Integer
-						while(playerPos>9 || playerPos<1) {
-							System.out.println("Invalid position! Enter valid position: ");
-							playerPos = scan.nextInt();
-						}
-						while(playerPositions.contains(playerPos) || aiPositions.contains(playerPos)) {
-							System.out.println("Position taken! Enter valid position: ");
-							playerPos = scan.nextInt();
-						}
+		oppTypeCheck:{
+			try{
+				int opponent = scanOpp.nextInt();
 
-						placePiece(gameBoard, playerPos, "player");
-						playerPositions.add(playerPos);
-						printGameBoard(gameBoard);
-						checkWinner();
-						currentPlayer = !currentPlayer;
-					}
-					catch(InputMismatchException err) {
-						// err is just a variable
-						System.out.println("You've entered a bad input, please try again!");
-						break typeCheck1;
-					}// end of typeCheck1 label
-			}
-			else{				
-				if(opponent == 0) {
-					System.out.println("CPU's turn!");
-					Random rand = new Random();
-					int aiPos = rand.nextInt(9) + 1;
-					while(playerPositions.contains(aiPos) || aiPositions.contains(aiPos))
-						aiPos = rand.nextInt(9) + 1;	// produces 0-8 numbers
-					placePiece(gameBoard, aiPos, "ai");		// need a minimax method for cpu position
-					aiPositions.add(aiPos);
-					printGameBoard(gameBoard);
-					checkWinner();
-					currentPlayer = !currentPlayer;
-				}				
-				else {	
-					// 'Scanner' = to convert bytes from input stream into characters
-					Scanner scan = new Scanner(System.in);	// here, scanner created
-					System.out.println("Player 'O', enter your position (1-9): ");
-					
-					typeCheck2: 
-						try {
-							int aiPos = scan.nextInt();		// here, actually input is read, and we want to read the next/new input as Integer
-							while(aiPos>9 || aiPos<1) {
-								System.out.println("Invalid position! Enter valid position: ");
-								aiPos = scan.nextInt();
+				printGameBoard(gameBoard);
+
+				boolean currentPlayer = Math.random() <= 0.5;	
+
+				while(true) {
+					if(currentPlayer) {
+						//'Scanner' = to convert bytes from input stream into characters
+						Scanner scan = new Scanner(System.in);	//here, scanner created
+						System.out.println("Player 'X' enter your position (1-9): ");
+
+						typeCheck1:
+							// to handle bad inputs
+							try {
+								int playerPos = scan.nextInt();		//here, actually input is read, and we want to read the next/new input as Integer
+								while(playerPos>9 || playerPos<1) {
+									System.out.println("Invalid position! Enter valid position: ");
+									playerPos = scan.nextInt();
+								}
+								while(playerPositions.contains(playerPos) || aiPositions.contains(playerPos)) {
+									System.out.println("Position taken! Enter valid position: ");
+									playerPos = scan.nextInt();
+								}
+
+								placePiece(gameBoard, playerPos, "player");
+								playerPositions.add(playerPos);
+								printGameBoard(gameBoard);
+								checkWinner();
+								currentPlayer = !currentPlayer;
 							}
-							while(playerPositions.contains(aiPos) || aiPositions.contains(aiPos)) {
-								System.out.println("Position taken! Enter valid position: ");
-								aiPos = scan.nextInt();
-							}
-							
-							placePiece(gameBoard, aiPos, "ai");
+							catch(InputMismatchException err) {
+								// err is just a variable
+								System.out.println("You've entered a bad input, please try again!");
+								break typeCheck1;
+							}// end of typeCheck1 label
+					}// end of if block
+					else{				
+						if(opponent == 0) {
+							System.out.println("CPU's turn!");
+							Random rand = new Random();
+							int aiPos = rand.nextInt(9) + 1;
+							while(playerPositions.contains(aiPos) || aiPositions.contains(aiPos))
+								aiPos = rand.nextInt(9) + 1;	// produces 0-8 numbers
+							placePiece(gameBoard, aiPos, "ai");		// need a minimax method for cpu position
 							aiPositions.add(aiPos);
 							printGameBoard(gameBoard);
 							checkWinner();
 							currentPlayer = !currentPlayer;
-						}
-						catch(InputMismatchException err) {
-							System.out.println("You've entered a bad input, please enter valid input: ");
-							break typeCheck2;
-						}// end of typeCheck2 label
-				}// end of inner else loop
-			}// end of else loop
-		}// end of while loop
+						}				
+						else {	
+							// 'Scanner' = to convert bytes from input stream into characters
+							Scanner scan = new Scanner(System.in);	// here, scanner created
+							System.out.println("Player 'O', enter your position (1-9): ");
+
+							typeCheck2: 
+								try {
+									int aiPos = scan.nextInt();		// here, actually input is read, and we want to read the next/new input as Integer
+									while(aiPos>9 || aiPos<1) {
+										System.out.println("Invalid position! Enter valid position: ");
+										aiPos = scan.nextInt();
+									}
+									while(playerPositions.contains(aiPos) || aiPositions.contains(aiPos)) {
+										System.out.println("Position taken! Enter valid position: ");
+										aiPos = scan.nextInt();
+									}
+
+									placePiece(gameBoard, aiPos, "ai");
+									aiPositions.add(aiPos);
+									printGameBoard(gameBoard);
+									checkWinner();
+									currentPlayer = !currentPlayer;
+								}
+								catch(InputMismatchException err) {
+									System.out.println("You've entered a bad input, please try again!");
+									break typeCheck2;
+								}// end of typeCheck2 label
+						}// end of inner else block
+					}// end of else block
+				}// end of while loop
+			}
+			catch(InputMismatchException err) {
+				System.out.println("You've entered a bad input, please try again!");
+				break oppTypeCheck;
+			}
+		}// end of oppTypeCheck label
 	}// end of ticTacToe function
 	
 	
