@@ -9,15 +9,6 @@ import java.util.Scanner;
 
 public class TicTacToe {
 	
-	/* TASKs(unfinished):
-	 * 5) interface => (basic gui/polished gui)
-	 */
-	
-	//static variable => basically a global variable that all methods know, static meaning we don't need an object everytime we access it
-	//ArrayList => elements + size can be modified whenever
-	//Array => elements can be modified whenever, but not size(fixed)
-	//List => ???
-	
 	static ArrayList<Integer> playerPositions = new ArrayList<Integer>();
 	static ArrayList<Integer> aiPositions = new ArrayList<Integer>();
 	
@@ -115,14 +106,15 @@ public class TicTacToe {
 						}// end of inner else loop
 					}// end of else loop
 				}// end of while loop
-			}
+			}// end of try block
 			catch(InputMismatchException err) {
 				System.out.println("You've entered a bad input, please try again!");
 				break typeCheck1;
 			}
 		}// end of typeCheck1 label
 	}// end of ticTacToe function	
-	//this is in seperate method to make main method a bit cleaner + needs to be used multiple times
+	
+	
 	public static void printGameBoard(char[][] gameBoard) {	
 		for(char[] row : gameBoard) {		//reads - for each 'char array' called 'row' inside gameBoard array
 			System.out.print("\t");
@@ -136,7 +128,8 @@ public class TicTacToe {
 		// after board is printed, create division
 		System.out.println("\n--------------------");
 		//println(char) => invokes print(char) and then println(void) -> prints the character & \n, goes to new line
-	}
+	}// end of printGameBoard function
+	
 	
 	public static void placePiece(char[][] gameBoard, int pos, String user) {
 		char turn = ' ';
@@ -174,7 +167,8 @@ public class TicTacToe {
 					gameBoard[4][4] = turn;
 				break;
 		}
-	}
+	}// end of placePiece function
+	
 	
 	public static void checkWinner() {		
 		//we'll save player and ai positions in an array & then check if those arrays have all winning positions in them
@@ -206,7 +200,8 @@ public class TicTacToe {
 			playAgain();
 		}
 		//tie condition out of for loop solved the infinite error
-	}
+	}// end of checkWinner function
+	
 
 	public static void playAgain() {
 		System.out.println("Play again? (y/n)");
@@ -220,7 +215,7 @@ public class TicTacToe {
 		else {
 			System.exit(0);
 		}
-	}
+	}// end of playAgain function
 	
-}
+}// end of TicTacToe class
 
