@@ -6,18 +6,16 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class MainClass {
-	
+public class TicTacToe {
+		
 	static ArrayList<Integer> playerPositions = new ArrayList<Integer>();
 	static ArrayList<Integer> aiPositions = new ArrayList<Integer>();
 	
 	public static void main(String[] args) {
-		//to enable play again option
-		TicTacToe();
-				
+		ticTacToe();
 	}
 	
-	public static void TicTacToe() {
+	public static void ticTacToe() {
 		
 		char[][] gameBoard = {{' ','|',' ','|',' '}, 
 				{'-','+','-','+','-'}, 
@@ -26,54 +24,95 @@ public class MainClass {
 				{' ','|',' ','|',' '}};	
 		//5x5 if we account of symbols that make the board look like a board, positions => [0/2/4][0/2/4]
 		
+		System.out.println("Play against CPU or Human? \n(0 for CPU and 1 for Human)");
+		Scanner scanOpp = new Scanner(System.in);
+		int opponent = scanOpp.nextInt();
+		
 		printGameBoard(gameBoard);
 		
+		boolean currentPlayer = Math.random() <= 0.5;
+		
 		while(true) {
-			
-			//'Scanner' = to convert bytes from input stream into characters
-			Scanner scan = new Scanner(System.in);	//here, scanner created
-			System.out.println("Enter your position (1-9): ");
-			int playerPos = scan.nextInt();		//here, actually input is read, and we want to read the next/new input as Integer
-			while(playerPositions.contains(playerPos) || aiPositions.contains(playerPos)) {
-				System.out.println("Position taken! Enter valid position: ");
-				playerPos = scan.nextInt();
+			if(currentPlayer) {
+				//'Scanner' = to convert bytes from input stream into characters
+				Scanner scan = new Scanner(System.in);	//here, scanner created
+				System.out.println("Player 'X' enter your position (1-9): ");
+				int playerPos = scan.nextInt();		//here, actually input is read, and we want to read the next/new input as Integer
+				while(type(playerPos) != int) {
+					System.out.println("Please, stop being a jerk and enter valid input (-_-)");
+					playerPos = scan.nextInt();
+				}
+				while(playerPos>9 || playerPos<1) {
+					System.out.println("Invalid position! Enter valid position: ");
+					playerPos = scan.nextInt();
+				}
+				while(playerPositions.contains(playerPos) || aiPositions.contains(playerPos)) {
+					System.out.println("Position taken! Enter valid position: ");
+					playerPos = scan.nextInt();
+				}
+
+				placePiece(gameBoard, playerPos, "player");
+				playerPositions.add(playerPos);
+				printGameBoard(gameBoard);
+				checkWinner();
+				currentPlayer = !currentPlayer;
 			}
-			if(playerPos>9 || playerPos<1) {
-				System.out.println("Invalid position! Enter valid position: ");
-				playerPos = scan.nextInt();
+			else{				
+				if(opponent == 0) {
+					System.out.println("CPU's turn!");
+					Random rand = new Random();
+					int aiPos = rand.nextInt(9) + 1;
+					while(playerPositions.contains(aiPos) || aiPositions.contains(aiPos))
+						aiPos = rand.nextInt(9) + 1;	//produces 0-8 numbers
+					placePiece(gameBoard, aiPos, "ai");		
+					//need a minimax method for AI position (currently we're playing against mindless CPU)
+					aiPositions.add(aiPos);
+				}				
+				else {	
+					//'Scanner' = to convert bytes from input stream into characters
+					Scanner scan = new Scanner(System.in);	//here, scanner created
+					System.out.println("Player 'O', enter your position (1-9): ");
+					int aiPos = scan.nextInt();		//here, actually input is read, and we want to read the next/new input as Integer
+					while(type(aiPos) != int) {
+						System.out.println("Please, stop being a jerk and enter valid input (-_-)");
+						aiPos = scan.nextInt();
+					}
+					while(aiPos>9 || aiPos<1) {
+						System.out.println("Invalid position! Enter valid position: ");
+						playerPos = scan.nextInt();
+					}
+					while(playerPositions.contains(aiPos) || aiPositions.contains(aiPos)) {
+						System.out.println("Position taken! Enter valid position: ");
+						aiPos = scan.nextInt();
+					}
+					placePiece(gameBoard, aiPos, "ai");
+					aiPositions.add(aiPos);
+				}
+				printGameBoard(gameBoard);
+				checkWinner();
+				currentPlayer = !currentPlayer;
 			}
-			placePiece(gameBoard, playerPos, "player");
-			playerPositions.add(playerPos);
-			printGameBoard(gameBoard);
-			checkWinner();
-			
-			System.out.println("\n------------\n");
-			
-			Random rand = new Random();
-			int aiPos = rand.nextInt(9) + 1;
-			while(playerPositions.contains(aiPos) || aiPositions.contains(aiPos))
-				aiPos = rand.nextInt(9) + 1;	//produces 0-8 numbers
-			placePiece(gameBoard, aiPos, "ai");		//need a minimax method for cpu position
-			aiPositions.add(aiPos);
-			printGameBoard(gameBoard);
-			checkWinner();
 		}
 	}
 	
 	//this is in seperate method to make main method a bit cleaner + needs to be used multiple times
 	public static void printGameBoard(char[][] gameBoard) {	
 		for(char[] row : gameBoard) {		//reads - for each 'char array' called 'row' inside gameBoard array
+			System.out.print("\t");
 			for(char col : row) {		//for each 'char' inside that row
 				System.out.print(col);
+				//we don't want to go next line till all elements in the row are printed so 'print' not 'println'
 			}
 			System.out.println();
+			//next line after each row is printed
 		}
+		// after board is printed, create division
+		System.out.println("\n--------------------");
+		//println(char) => invokes print(char) and then println(void) -> prints the character & \n, goes to new line
 	}
 	
 	public static void placePiece(char[][] gameBoard, int pos, String user) {
-		
 		char turn = ' ';
-		
 		if(user.equals("player"))
 			turn = 'X';
 		else if(user.equals("ai"))
@@ -110,24 +149,7 @@ public class MainClass {
 		}
 	}
 	
-//	public static void 	Redo(char[][] gameBoard, String user) {
-//		//takes care of invalid moves
-//		if(user.equals("player")) {
-//			Scanner scan = new Scanner(System.in);
-//			System.out.println("Please enter valid move: "); 
-//			playerPos = scan.nextInt();
-//			placePiece(gameBoard, playerPos, "player");
-//		}
-//		else if(user.equals("ai")) {
-//			Random rand = new Random();
-//			aiPos = rand.nextInt(9);
-//			placePiece(gameBoard, aiPos, "ai");
-//		}
-//	}
-//my sed attempt on my own
-	
-	public static void checkWinner() {
-		
+	public static void checkWinner() {		
 		//we'll save player and ai positions in an array & then check if those arrays have all winning positions in them
 		List<Integer> topRow = Arrays.asList(1,2,3);
 		List<Integer> midRow = Arrays.asList(4,5,6);
@@ -160,19 +182,18 @@ public class MainClass {
 	}
 
 	public static void playAgain() {
-		
 		System.out.println("Play again? (y/n)");
 		Scanner ans = new Scanner(System.in);
 		String answer = ans.next();
 		if(answer.contains("y") || answer.contains("Y")) {
 			aiPositions.clear();
 			playerPositions.clear();
-			TicTacToe();
+			ticTacToe();
 		}
 		else {
 			System.exit(0);
 		}
 	}
 	
-	
 }
+
